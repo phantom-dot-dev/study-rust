@@ -5,4 +5,5 @@ insert/i at the cursor, append/a after the cursor, append-new-line/o ect for  wr
 
 save/`:wq`, discard-changes/`:q!` are notables from `esc` mode
 
+- cut/paste: d to cut and p to paste. For clipboard source, use gui.
 Cheat: https://vim.rtorr.com/
