@@ -12,7 +12,8 @@ Install the rust analyzer plugin in vscode. and link the analyzer executable usi
 
 For termux setup (in Android), install `rust` and `rust-analyzer` from termux's packages using pkg. Then link the analyzer in vscode. Search the analyzer executabel by `which rust-analyzer` command.
 
-## Init project with cargo
+
+### Init project with cargo:
 
 `cargo new <project-name>` -> this will create the project directory with
 - src: source directory with a `main.rs` file
