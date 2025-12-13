@@ -21,3 +21,8 @@ For termux setup (in Android), install `rust` and `rust-analyzer` from termux's 
 - Cargo.toml: Configuration file for dependencies and other (.toml: toms ovious minimal language)
 - Cargo.lock: Not intendent for manual edit. It will be managed by Cargo for keeping different config information.
 - `mod.rs` is a source code file used to define the contents and public interface of a module within the Rust language's module system. Optional science 2018, Intead, The compiler automatically looks for `module_name.rs` or a `module_name/` directory when mod `module_name` is declared in the parent file, making the code structure generally cleaner and easier to navigate.
+
+
+### vscode code ruining shortcut `ctrl + r`:
+Set vscode keyboard shortcut, run `ctrl + k` and `ctrl + s` and search for `rust.analyzer.run` and set `ctrl + r` as keyboard shortcut. 
+
