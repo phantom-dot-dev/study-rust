@@ -17,6 +17,51 @@ fn main() {
 }
 ```
 
+### `::` vs `.`:
+Or: . is for value member access, :: is for namespace member access
+
+```rust
+// usages of `.`
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        rect1.area()
+    );
+}
+
+
+// Usages of `::`
+impl Rectangle {
+    // Associated Function
+    fn square(size: u32) -> Rectangle {
+        Rectangle {
+            width: size,
+            height: size,
+        }
+    }
+}
+
+fn main() {
+    let sq = Rectangle::square(3);
+}
+```
+
 ### Basic and User input:
 ```rust
 #![allow(unused)] // to get rid of Unsed warning
@@ -168,3 +213,66 @@ fn main() {
     };
 }
 ```
+
+### Array and Loop:
+- Elements in an array are must be same type
+- Arrays are in fixed size
+
+```rust
+fn main() {
+    // Arrays
+    let arr_1: [i32; 9] = [1,2,3,4,5,6,7,8,9];
+    println!("1st : {}", arr_1[0]);
+    println!("Length: {}", arr_1.len());
+
+    // loop
+    let mut loop_idx: usize = 0; // index must be of usize
+
+    loop {
+        if arr_1[loop_idx] % 2 == 0 {
+            loop_idx += 1;
+            continue;
+        }
+
+        if arr_1[loop_idx] == 9 {
+            break;
+        }
+
+        println!("Val : {}", arr_1[loop_idx]);
+        loop_idx +=1;
+    }
+
+    // while loop
+    loop_idx = 0; // resetting loop index
+    while loop_idx < arr_1.len() {
+        println!("Arr : {}", arr_1[loop_idx]);
+        loop_idx +=1;
+    }
+
+    // for loop
+    for val in arr_1.iter() {
+        println!("Val : {}", val);
+    }
+
+}
+```
+
+### Tuple:
+```rust
+fn main() {
+    // Tuple
+    let my_tuple: (u8, String, f64) = (47, "Something".to_string(), 1234.00);
+    println!("my_tuple values are {} {} {}", my_tuple.0, my_tuple.1, my_tuple.2);
+
+    // tuple destructuring
+    let (a, b, c) = my_tuple;
+}
+```
+
+### String:
+2 types (mostly): String and &str.
+
+A `String` is stored as a vector of bytes (Vec<u8>), but guaranteed to always be a valid UTF-8 sequence. String is heap allocated, growable and not null terminated.
+
+`&str` (String pointer) is a slice (&[u8]) that always points to a valid UTF-8 sequence, and can be used to view into a String, just like &[T] is a view into Vec<T>.
+
