@@ -14,7 +14,6 @@ For termux setup (in Android), install `rust` and `rust-analyzer` from termux's 
 
 
 ### Init project with cargo:
-
 `cargo new <project-name>` -> this will create the project directory with
 - src: source directory with a `main.rs` file
 - target:  
@@ -25,4 +24,3 @@ For termux setup (in Android), install `rust` and `rust-analyzer` from termux's 
 
 ### vscode code ruining shortcut (`ctrl + r`) :
 Set vscode keyboard shortcut, run `ctrl + k` and `ctrl + s` and search for `rust.analyzer.run` and set `ctrl + r` as keyboard shortcuts.
-

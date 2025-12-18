@@ -6,35 +6,30 @@ use std::fs::File;
 use std::io; // std::io:* to bring all packages
 use std::io::{BufRead, BufReader, ErrorKind, Write}; // nested path syntax to multiple import
 
+fn say_hello() {
+    println!("Hello World From Rust")
+}
+
+fn get_sum(x: i32, y: i32) {
+    println!("{} + {} = {}", x, y, x + y);
+}
+
+fn get_sum_2(x: i32, y: i32) -> i32 {
+    x + y // no semicolon at the end and no `return` keyword is specified, it is implicit return
+    // return x + y; // or explicitly using return statement and ending with semicolon
+}
+
+// returning tuple
+fn get_tuple(initial: i32) -> (i32, i32) {
+    (initial + 1, initial + 2)
+}
+
 fn main() {
-    // Vector: Vectors are like array. Mutable vectors can grow. It store value of same type
-    let vec1: Vec<i32> = Vec::new();
-    let mut vec2:Vec<i32> = vec![1,2,3,4];
-    vec2.push(5); 
-    println!("1st : {}", vec2[0]);
+    // Function calling
+    say_hello();
+    get_sum(1, 2);
+    println!("{}", get_sum_2(3, 4));
 
-    let second: &i32 = &vec2[1];
-    match vec2.get(1) {
-        Some(second) => println!("(Matching)  2nd : {}", second),
-        None => println!("Not a match!"),
-    };
-
-    // note : if Some and None arms are provide inside of the match block, the match will expect `Option<T>`
-    match vec2[1] {
-        // Some(second) => println!("(Matching)  2nd : {}", second),
-        // None => println!("Not a match!"),
-        _ => println!("Just a default output") // default arm must be provide for non exhaustive matching
-    };
-
-    for i in &mut vec2 {
-        // `&mut vec2` will make the vec2 borrow-able, so we can modify that inside of the for loop
-        *i *= 2; // multiplying the element (pointer) with 2 
-    }
-
-    // lets check if the vec2 is modified
-
-    // checking with index, using vec2.inter().enumerate()
-    for (index, element) in vec2.iter().enumerate() {
-        println!("vec2 index : {} and vec2 element : {}", index, element);
-    }
+    let destructuring_tuple = get_tuple(1);
+    println!("Printing tuple = ({}, {})", destructuring_tuple.0, destructuring_tuple.1);
 }
