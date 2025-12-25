@@ -481,7 +481,7 @@ fn main() {
 }
 ```
 
-### Generics:
+### Generics :
 ```rust
 use std::ops::Add; // operators Add to implement Generics computation
 
