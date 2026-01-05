@@ -11,6 +11,7 @@ Building for release: `cargo build --release`
 
 Ongoing : Guessing game https://doc.rust-lang.org/book/ch02-00-guessing-game-tutorial.html
 
+
 ### String interpolation:
 Rust use macro like `std::fmt` for format string.
 
@@ -33,4 +34,22 @@ let world = "lovely world";
 println!(r#"hello "{world}""#); // Output: hello "lovely world"
 ```
 
-### Using Libraries:
+### Using Libraries (Carets) | version management with cargo:
+
+`Cargo.toml` (Tom's obvious minimal language) is the place for versioning. 
+Inside, each section is divided by a header, like `[package]`, `[dependencies]` etc. 
+`Cargo.lock` file is used internally by cargo to track dependencies versions, not for manual editing.
+
+`cargo update` command will ignore the `Cargo.lock` file, and will update the latest minor version. IE, `0.7.1` will update to maximum of `0.7.9` if available, and also will notify for available latest major release. To update to major release, editing the `Cargo.toml` is the option to go.
+
+always run `cargo build` or `cargo run` to compile the packages
+
+```toml
+[package]
+name = "guessing-game"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rand = "0.8.5"
+```
