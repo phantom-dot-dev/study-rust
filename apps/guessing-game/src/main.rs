@@ -1,9 +1,18 @@
 use std::io;
+
+use rand::Rng;
 // importing a library is called `prelude` in rust. prelude = `an action or event serving as an introduction to something more important`
 // std stands for `standard` library. `std::io` makes the input/output standard library available to the scope
+// here, we're using `rand` library/caret's `Rng` trait
+// The Rng trait defines methods that random number generators implement, and this trait must be in scope for us to use those methods.
 
 fn main() {
     println!("Guess the number!");
+
+    // creating the secret number
+    let secret_number = rand::thread_rng().gen_range(1..=100);
+    println!("The secret number is {secret_number}");
+
     println!("Please input your guess.");
 
     // The equal sign (=) tells Rust we want to bind something to the variable
