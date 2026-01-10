@@ -34,7 +34,7 @@ let world = "lovely world";
 println!(r#"hello "{world}""#); // Output: hello "lovely world"
 ```
 
-### Using Libraries (Carets) | version management with cargo:
+### Using Libraries (Carets) | version management with cargo | Cargo.toml or `cargo add <crate>`:
 
 `Cargo.toml` (Tom's obvious minimal language) is the place for versioning. 
 Inside, each section is divided by a header, like `[package]`, `[dependencies]` etc. 
@@ -42,7 +42,7 @@ Inside, each section is divided by a header, like `[package]`, `[dependencies]` 
 
 `cargo update` command will ignore the `Cargo.lock` file, and will update the latest minor version. IE, `0.7.1` will update to maximum of `0.7.9` if available, and also will notify for available latest major release. To update to major release, editing the `Cargo.toml` is the option to go.
 
-always run `cargo build` or `cargo run` to compile the packages
+* always run `cargo build` or `cargo run` to compile the packages
 
 ```toml
 [package]

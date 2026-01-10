@@ -1,4 +1,6 @@
-use std::io;
+// use std::cmp::Ordering;
+// use std::io;
+use std::{cmp::Ordering, io}; // importing libraries in a single line
 
 use rand::Rng;
 // importing a library is called `prelude` in rust. prelude = `an action or event serving as an introduction to something more important`
@@ -44,4 +46,30 @@ fn main() {
      * Without expect, the program will compile, but issue warning showing the `error case is not handled`
      * In simple terms, expect is used to handle the error case
     */
+
+    /*
+    Convert the user input into number type u32
+    - (Shadowing) creating a new variable of same name but different type (u32 here)
+    - Shadowing is feature is often used when you want to convert a value from one type to another type
+    - `trim` will remove any white-space or newline `\n` as user must press `return` to satisfy read_line function 
+    - The parse method on strings converts a string to another type
+    - u32 for `positive number`
+     */
+    let guess: u32 = guess.trim().parse().expect("Please type a number");
+
+
+    /*
+    Comparing the Guess to the Secret Number
+     */
+   loop {
+     match guess.cmp(&secret_number) {
+        Ordering::Less => println!("Too small"),
+        Ordering::Greater => println!("Too big"),
+        Ordering::Equal => {
+            println!("You win");
+            break;
+        },
+    }
+   }
+
 }
