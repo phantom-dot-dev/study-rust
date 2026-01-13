@@ -421,7 +421,6 @@ fn main() {
 }
 ```
 
-
 ### `Option<T>` enum | containing `Some` and `None`:
 None and Some are the variants of the enum, that is, a value with type Option<T> can either be a None, or it can be a Some containing a value of type T. 
 
@@ -431,7 +430,6 @@ pub enum Option<T> {
     Some(T),
 }
 ```
-
 
 ### Functions:
 

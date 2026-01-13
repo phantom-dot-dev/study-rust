@@ -1,3 +1,6 @@
+### Overviews:
+* Rust is a statically typed language, which means that it must know the types of all variables at compile time
+
 ### Cargo:
 Creating project : `cargo init` or `cargo new <project name>`. also run `cargo --help` or `cargo help init` for more option.
 
@@ -53,6 +56,10 @@ edition = "2024"
 [dependencies]
 rand = "0.8.5"
 ```
+
+### Error Description:
+The compiler will throw error and error number as `error[<error_number>]`
+- `rustc --explain <error_number>` command will show some more description about the error
 
 ### Guessing Game:
 A simple terminal game, the program will generate a random number between 1 & 100, and will ask the user to guess the exact number until it's correct.
@@ -150,7 +157,43 @@ fn main() {
 ### Variable `let` and Constant `const`:
 Variables `let variable_name` are immutable by default, to make it mutable, use `mut` keyword as `let mut variable_name`. Naming convention is `snake_case`
 
-Constants are always immutable and cannot be evaluated during runtime or based on another variable. `const CONSTANT_NAME` to define a constant. Naming Convention is `SCREAMING_SNAKE_CASE`
+Constants are always immutable, mut cannot be used with const and cannot be evaluated during runtime or based on another variable. `const CONSTANT_NAME` to define a constant. Naming Convention is `SCREAMING_SNAKE_CASE`
+
+`shadowing` - new variable with the same name as a previous variable (both same or different scope), hence the first variable is shadowed by the second.
+
+* `let` is required to create a shadowed variable.
+* By creating shadowed variable using let (instead of `let mut`), we can perform a few transformations on a value but have the variable be immutable after those transformations have completed.
+
+```rust
+fn main() {
+    let x = 5;
+
+    let x = x + 1;
+
+    {
+        let x = x * 2;
+        println!("The value of x in the inner scope is: {x}");
+    }
+
+    println!("The value of x is: {x}");
+}
+
+// The value of x in the inner scope is: 12
+// The value of x is: 6
+```
+* Shadowing can also done with same name but different data types. Which makes it handy and powerful
+
+```rust
+let mut spaces = "   ";
+spaces = spaces.len();
+```
+
+* But, mutable variable doesn't support this type of conversion
+
+```rust
+let mut spaces = "   ";
+spaces = spaces.len(); // will throw compiler error, as mutable variable cannot change type
+```
 
 ### Rust naming convention: 
 - Local Variables & Function Parameters: Use snake_case (all lowercase, words separated by underscores), e.g., let user_id = 1;, let file_name = "data";.
@@ -168,3 +211,69 @@ Constants are always immutable and cannot be evaluated during runtime or based o
 - Modules: Use snake_case.
 
 - Crates: Use snake_case
+
+### Data types | scalar (single) and compound:
+Primarily can be divided into 2 types
+- Scalar types: A scalar type represents a single value. Rust has four primary scalar types: `integers` (signed `i` or unsigned `u`), `floating-point` numbers (always signed following the IEEE-754 standard, `f32 and f64`), `Booleans`, and `characters`.
+
+- Compound types: Compound types can group multiple values into one type. Rust has two primitive compound types: tuples and arrays.
+
+### Integers and Floating-Point number | Scalar:
+
+* signed `i` vs unsigned `u` : when the number needs to have a sign (`+` or `-` sign) with it (signed) or whether it will only ever be positive and can therefore be represented without a sign (unsigned)
+
+* Each signed variant can store numbers from `−2^(n − 1)` to `2^(n − 1) − 1` inclusive, where n is the number of bits that variant uses. So, an i8 can store numbers from −(2^7) to 2^7 − 1, which equals −128 to 127. Unsigned variants can store numbers from 0 to `2^n − 1`, so a u8 can store numbers from 0 to `2^8 − 1`, which equals 0 to 255.
+
+* Integer overflow: when an integer is out of the types bound. ie, type u8 that can hold values between 0 and 255, storing 256 will cause `integer overflow`. In Rust's debug mode, it will cause `panic` at runtime (panicking = when a program exits with an error). In `--release` mode, rust will not check for integer overflow. instead, if overflow occurs, Rust performs two’s complement wrapping. In short, values greater than the maximum value the type can hold “wrap around” to the minimum of the values the type can hold. In the case of a u8, the value 256 becomes 0, the value 257 becomes 1, and so on.
+
+* To explicitly handle the possibility of overflow, use `wrapping_*` methods, such as `wrapping_add`. Some more are `checked_*`, `overflowing_*`, `saturating_*` etc
+
+- Numeric operations
+
+```rust
+fn main() {
+    // addition
+    let sum = 5 + 10;
+
+    // subtraction
+    let difference = 95.5 - 4.3;
+
+    // multiplication
+    let product = 4 * 30;
+
+    // division
+    let quotient = 56.7 / 32.2;
+    let truncated = -5 / 3; // Results in -1
+
+    // remainder
+    let remainder = 43 % 5;
+}
+```
+
+### Boolean `bool` and Character `char` | Scalar:
+- Booleans `bool` are one byte in size. It can be either `true` or `false`. 
+
+- Rust’s `char` type is the language’s most primitive alphabetic type. Defined with `single-quote` (Strings are defined by `double-quote`). `char` type is 4 bytes in size and represents a Unicode scalar value, which means it can represent a lot more than just ASCII. Accented letters; Chinese, Japanese, and Korean characters; emojis; and zero-width spaces are all valid char values in Rust.
+
+```rust
+fn main() {
+    // Boolean
+    let t = true;
+    let f: bool = false; // with explicit type annotation
+
+    // Character
+    let c = 'z';
+    let z: char = 'ℤ'; // with explicit type annotation
+    let heart_eyed_cat = '😻';
+}
+```
+
+### Compound Types | `tuple` and `array` | array vs Vec<T> (Flexibility):
+Both tuples and arrays are fixed in size. Hence, stored in the stack. Once declared, they cannot grow or shrink in size. Vec<T> can grow or shrink, hence stored in the heap.
+
+* Both tuple and array can be declared using `let` and `let mut`, when declared with `mut`, we can change its individual element's value.
+
+- Tuple : written by a comma-separated list of values inside parentheses `(1, 2, 1.2)`. It can contain 
+
+* `unit` type is an empty tuple `()`
+
