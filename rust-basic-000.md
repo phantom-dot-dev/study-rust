@@ -314,10 +314,41 @@ fn main() {
 }
 
 print_labeled_measurement(value: i32, unit_label: char) {
-    println!("The measurement is : {value}{unit_label});
+    println! ("The measurement is : {value}{unit_label});
 }
 ```
 
 * Statement vs Expression: Rust is an expression based language. Where 
-    - Statements are instructions that perform some action and do not return a value (no returns, perform tasks, binding or assignment)
-    - Expressions evaluate to a resultant value (evaluates to a value or returns). `6+6` or `6` are both expression as they evaluate to a value. Expression can be part of a statement
+    - Statements are instructions that perform some action and do not return a value (no returns, perform tasks, binding or assignment). Function declaration is a Statement (calling that is an expression)
+    - Expressions evaluate to a resultant value (evaluates to a value or returns). `6+6` or `6` are both expression as they evaluate to a value. Expression can be part of a statement ( as a whole )
+
+
+* why `let x = y = 7` doesn't work in rust but works in C and Ruby:
+In Rust any assignment or binding doesn't retune anything, but in C or Ruby, assignment or binding returns the value.
+
+* Calling a function is an expression. Calling a macro is an expression. A new scope block created with curly brackets is an expression.
+
+```rust
+fn main() {
+    let y = {
+        let x = 3;
+        x + 1
+    };
+
+    println!("The value of y is: {y}");
+}
+
+/**
+* This part `a new scope block` is an expression
+* Note: Expressions do not include ending semicolons. If you add a semicolon to the end of an expression, you turn it into a statement, and it will then not return a value. You've to explicitly state the `return` statement to make it return.
+* A.K.A : ending line with no semicolon will be considered as return 
+{
+    let x = 3;
+    x + 1
+}
+*/
+```
+
+* Rust nothing returning type is `Unit` as `()` empty tuple
+* Swift's nothing returning type is `Void` as `()` empty tuple
+* Java's nothing returning type is `Void` only, value of Void is null
