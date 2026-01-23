@@ -435,7 +435,7 @@ pub enum Option<T> {
 
 ```rust
 fn say_hello() {
-    println!("Hello World From Rust")
+    println!("Hello World From Rust");
 }
 
 fn get_sum(x: i32, y: i32) {
@@ -444,7 +444,7 @@ fn get_sum(x: i32, y: i32) {
 
 fn get_sum_2(x: i32, y: i32) -> i32 {
     x + y // no semicolon at the end and no `return` keyword is specified, it is implicit return
-    // return x + y; // or explicitly using return statement and ending with semicolon 
+    // return x + y; // or explicitly using return statement and ending with semicolon .
 }
 
 // returning tuple
@@ -458,7 +458,7 @@ fn sum_list(list: &[i32]) -> i32 {
     for &val in list.iter() {
         sum += &val;
     }
-    sum // implicit return
+    sum // implicit return, when without the semicolon
 }
 fn main() {
     // Function calling

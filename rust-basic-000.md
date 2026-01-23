@@ -354,5 +354,42 @@ fn main() {
 * Java's nothing returning type is `Void` only, value of Void is null
 
 ### Comments:
-`//` for idiomatic comments
+`//` for idiomatic comments (non doc comment)
+`/* ... */` block comments(non doc comments)
 
+* Doc Comments 
+
+`///`, also  `/** ... */` as block comment, for documentation comments and support markdown formatting inside of the doc comment block. It will generate html if `cargo doc --open` is run.
+
+* doc comments expect the code (function) block to begin immediately after the comments end
+
+```rust
+/// Adds one to the number given.
+///
+/// # Examples
+///
+/// ```
+/// let arg = 5;
+/// let answer = my_crate::add_one(arg);
+///
+/// assert_eq!(6, answer);
+/// ```
+pub fn add_one(x: i32) -> i32 {
+    x + 1
+}
+```
+
+
+`//!` also `/*! ... */` as block comment, is another type of doc comment. The style of doc comment //! adds documentation to the item that contains the comments rather than to the items following the comments. We typically use these doc comments inside the crate root file (src/lib.rs by convention) or inside a module to document the crate or the module as a whole.
+
+* Notice there isn’t any code after the last line that begins with //!
+
+```rust
+//! # My Crate
+//!
+//! `my_crate` is a collection of utilities to make performing certain
+//! calculations more convenient.
+
+/// Adds one to the number given.
+// --snip--
+```

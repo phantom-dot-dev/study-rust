@@ -29,5 +29,5 @@ Ownership Rules:
 {                      // s is not valid here, since it's not yet declared
     let s = "hello";   // s is valid from this point forward
     let t = "world";   // t is valid from here
-}                      // this scope is now over, and s and t are no longer valid, t removed first, then the s had been removed. As of `stack`, last-in-first-out
+}                      // this scope is now over, and s and t are no longer valid, t removed first, then the s had been removed. As of `stack`, last-in-first-out.
 ```
