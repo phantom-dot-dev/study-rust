@@ -435,14 +435,136 @@ Rust has three kinds of it -> `loop`, `while`, and `for`
 fn main() {
     let mut counter = 0;
 
+    // implemented as expression, where the loop returns calculated counter * 2
     let result = loop {
-        counter += 1;
+        
+        if counter == 8 {
+            continue;
+        }
+
+        println!("Current counter number is = {}, only 8 is skipped using continue call", counter);
 
         if counter == 10 {
-            break counter * 2;
+            counter *= 2;
+            break;
         }
     };
 
     println!("The result is {result}");
+
+    /*
+    * implementing loop as expression, where it will not return as a whole
+    
+    loop {
+        counter += 1;
+
+        if counter == 10 {
+            counter *= 2;
+            break;
+        }
+    }
+
+    println!("The result is {counter}"):
+    */   
+}
+```
+
+### Counting to 1m:
+```rust
+use std::time::{SystemTime, UNIX_EPOCH};
+
+fn main() {
+    let mut counter: u128 = 0;
+    let time_old = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis();
+
+    loop {
+        counter += 1;
+        // println!("counter = {counter}"); // no printing will make is 100x fast
+        if counter == 10_000_000 {
+            counter *= 2;
+            break;
+        }
+    }
+
+    println!("counter value is now {counter}");
+    let time_now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis();
+    println!("Elapsed time = {} milliseconds", time_now - time_old);
+}
+```
+
+
+### Loop with Labels to control break/continue | nested loops:
+If you have loops within loops, break and continue apply to the innermost loop at that point. By specifying a loop label, break or continue can control those specific loops behavior.
+
+* loop label must start with a `single quote`. 
+
+```rust
+fn main() {
+    let mut count = 0;
+    // define a labeled loop
+    'counting_up: loop {
+        println!("count = {count}");
+        let mut remaining = 10;
+
+        loop {
+            println!("remaining = {remaining}");
+            if remaining == 9 {
+                break;
+            }
+            if count == 2 {
+                println!("Breaking the parent loop");
+                break 'counting_up;
+            }
+            remaining -= 1;
+        }
+
+        count += 1;
+    }
+    println!("End count = {count}");
+}
+```
+
+### While loop | `while condition {}`:
+While loop can be implemented using loop, if, else, and break. But rust has built in support for this `while` loop.
+
+```rust
+fn main() {
+    let mut counter = 3;
+
+    while counter != 0 {
+        println!("{counter}");
+        counter -= 1;
+    }
+
+    println!("All done");
+}
+```
+
+### `for` (preferred) and `while` loops for array iteration:
+Though `while` can be used to iterate over an array. Rust's preferred the `for` loop for collection iteration (array, range, vector). Ie, using `while` loop can introduce index-out-of-range bug and panic. But `for` provides good support for accurate index count.
+
+```rust
+fn main() {
+    let num_array = [1, 2, 3, 4, 5, 6, 7];
+
+    for element in num_array {
+        println!("printing {element}");
+    }
+
+    // with both index and element
+    for (index, element) in num_array.iter().enumerate() {
+        println!("num_array index: {index} and element: {element}")
+    }
+
+    // for with reverse iteration
+    println!("Printing reverse order");
+    for element in num_array.iter().rev() {
+        println!("printing {element}");
+    }
+
+    // `for` to iterate over range in reverse order
+    for element in (1..=7).rev() {
+        println!("printing {element}");
+    }
 }
 ```
