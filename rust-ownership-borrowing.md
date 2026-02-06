@@ -41,7 +41,7 @@ Overall `String` type can refer to either core language's string slice `&str` bo
 
 Rust core library comes with only one string type, string slice `str` that is usually seen in its borrowed form, `&str`. This string slices are references to some UTF-8 encoded string data stored elsewhere. String literals, for example, are stored in the program’s binary and are therefore string slices.
 
-The std library provide the `String` type (different from the core's string slice type), which is a growable, mutable, owned, UTF-8 encoded string type. 
+The std library provide the `String` type (different from the core's string slice type), which is a growable, mutable, owned, UTF-8 encoded string type, stored in the heap.  
 
 ### Rust core vs standard-library:
 The Rust core library is the minimal, platform-agnostic foundation of the language, while the `std` library is the full standard library that builds upon core and adds platform-dependent capabilities like I/O and networking.
