@@ -24,3 +24,8 @@ For termux setup (in Android), install `rust` and `rust-analyzer` from termux's 
 
 ### vscode code ruining shortcut (`ctrl + r`) :
 Set vscode keyboard shortcut, run `ctrl + k` and `ctrl + s` and search for `rust.analyzer.run` and set `ctrl + r` as keyboard shortcuts.
+
+
+### Ongoing:
+
+Ownership : https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html
