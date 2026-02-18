@@ -43,7 +43,49 @@ Rust core library comes with only one string type, string slice `str` that is us
 
 The std library provide the `String` type (different from the core's string slice type), which is a growable, mutable, owned, UTF-8 encoded string type, stored in the heap.  
 
+
+* example 
+
+```rust
+let string_from_literal_1: &str = "Hello world";
+let string_from_literal_2: String = "Hello world for std library's String";
+```
+
 ### Rust core vs standard-library:
 The Rust core library is the minimal, platform-agnostic foundation of the language, while the `std` library is the full standard library that builds upon core and adds platform-dependent capabilities like I/O and networking.
 
 The core is not aware of features like heap allocation, concurrency, or file I/O, as these depends on OS.
+
+
+### Rust namespace: 
+A namespace is a logical grouping of declared names. Namespaces allow the occurrence of a name in one namespace to not conflict with the same name in another namespace. In layman's terms, namespaces are used to organize code and prevent naming conflicts.
+
+```rust
+// ---------------------- math.rs file ------------------------------
+// Functions are public so they can be accessed from outside the module
+pub fn add(a: i32, b: i32) -> i32 {
+    a + b
+}
+
+pub fn subtract(a: i32, b: i32) -> i32 {
+    a - b
+}
+
+
+// ------------------------- main.rs file --------------------------
+mod math; // Declares the module from the file
+
+use math::add; // Bring only the 'add' function into scope
+// use math::* // Bring all public items into scope
+
+fn main() {
+    let sum = add(5, 3); // Can now call 'add' directly
+    let difference = math::subtract(5, 3); // Still need to qualify 'subtract'
+    println!("Sum: {}, Difference: {}", sum, difference);
+}
+```
+
+- `mod` : Declares a new module, creating a new namespace.
+- `pub` : Makes items (functions, structs, etc.) public, allowing them to be accessed from outside their current module.
+- `use` : Imports items into the current scope, so you don't have to use their full path every time.
+- `::` : The namespace separator, used to access items within a module (e.g., std::collections::HashMap). 
