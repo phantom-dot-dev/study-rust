@@ -355,4 +355,4 @@ fn no_dangle() -> String {
 ### Slice type:
 A slice is kind of a reference, so it doesn't have ownership. Slice lets us reference a contiguous sequence of elements is a collection.
 
-* In idiomatic Rust, functions do not take ownership of their arguments unless they need to, (and the reasons for that will become clear as we keep going)
+* In idiomatic Rust, functions do not take ownership of their arguments unless they need to, ie `fn x(arg1: &T){}`, (and the reasons for that will become clear as we keep going)
