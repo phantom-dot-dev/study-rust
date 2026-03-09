@@ -280,7 +280,7 @@ fn change(str: &mut String) -> String {
 let mut s = String::from("hello");
 
 let r1 = &mut s;
-// let r2 = &mut s; // will throw compile error
+// let r2 = &mut s; // will throw compile error, cannot be borrowed as mutable more than noce
 
 // but creating separate scope with just `{}` curly braces is fine for this case
 let mut x = String::from("World!");
@@ -341,7 +341,7 @@ fn dangle() -> &String {
 // This works without any problems. Ownership is moved out, and nothing is deallocated
 fn no_dangle() -> String {
     let s = String::from("hello");
-    s
+    sg
 }
 ```
 
@@ -387,3 +387,22 @@ fn slicing_word_manual(words: &String) -> Vec<String> {
 A slice is kind of a reference, so it doesn't have ownership. Slice lets us reference a contiguous sequence of elements is a collection.
 
 * In idiomatic Rust, functions do not take ownership of their arguments unless they need to, ie `fn x(arg1: &T){}`, (and the reasons for that will become clear as we keep going)
+
+### &String vs &str:
+`&str` represents 2 types, `slice` (String sliced reference) and `string literal`. `&String` is the reference of a `String` (borrowed). 
+
+Another thing is, `&str` is part of a `&String` but with limited method. Like `&str` slice type cannot be used to concatenate. 
+
+* in function, it is possible to send `&String` as param and return a `&str`.
+
+```rust
+main() {
+    let s = String::from("Hello World!");
+    let full = full_string(&s);
+    println!("full string is = {full}"); // prints "Hello World!"
+}
+
+fn full_string(x: &String) -> &str {
+    x
+}
+```
