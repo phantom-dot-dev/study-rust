@@ -280,7 +280,7 @@ fn change(str: &mut String) -> String {
 let mut s = String::from("hello");
 
 let r1 = &mut s;
-// let r2 = &mut s; // will throw compile error
+// let r2 = &mut s; // will throw compile error, cannot be borrowed as mutable more than noce
 
 // but creating separate scope with just `{}` curly braces is fine for this case
 let mut x = String::from("World!");
@@ -341,7 +341,7 @@ fn dangle() -> &String {
 // This works without any problems. Ownership is moved out, and nothing is deallocated
 fn no_dangle() -> String {
     let s = String::from("hello");
-    s
+    sg
 }
 ```
 
@@ -351,8 +351,107 @@ fn no_dangle() -> String {
     - References must always be valid.
 
 ### Dereference type | `*T/V`:
+a borrowed type can be dereferenced using `*`, but without the `&` will simply work
+
+### Words collection without slice (first written programme):
+```rust
+main() {
+    let letter = String::from("Hello World Again");
+    let word_col = slicing_word_manual(&letter);
+    println!("words = {:?}", word_col);
+}
+
+fn slicing_word_manual(words: &String) -> Vec<String> {
+    // variable vector (container) with all the words
+    let mut word_vector: Vec<String> = vec![];
+    let mut a_word = String::from("");
+    let bytes = words.as_bytes();
+
+    // current pointer is the loop
+    for (index, &item) in bytes.iter().enumerate() {
+        if item == b' ' || index == bytes.len() - 1 {
+            if index == bytes.len() -1 {
+                a_word.push(*&item as char);
+            }
+            word_vector.push(a_word.clone());
+            a_word.clear();
+            continue;
+        }
+        a_word.push(*&item as char); // `a_word.push(item as char);` will also work, plain and simple 
+    }
+    return word_vector;
+}
+```
 
 ### Slice type:
 A slice is kind of a reference, so it doesn't have ownership. Slice lets us reference a contiguous sequence of elements is a collection.
 
-* In idiomatic Rust, functions do not take ownership of their arguments unless they need to, and the reasons for that will become clear as we keep going
+* In idiomatic Rust, functions do not take ownership of their arguments unless they need to, ie `fn x(arg1: &T){}`, (and the reasons for that will become clear as we keep going)
+
+### &String vs &str:
+`&str` represents 2 types, `slice` (String sliced reference) and `string literal`. `&String` is the reference of a `String` (borrowed). 
+
+Another thing is, `&str` is part of a `&String` but with limited method. Like `&str` slice type cannot be used to concatenate. 
+
+* in function, it is possible to send `&String` as param and return a `&str`.
+
+```rust
+main() {
+    let s = String::from("Hello World!");
+    let full = full_string(&s);
+    println!("full string is = {full}"); // prints "Hello World!"
+}
+
+fn full_string(x: &String) -> &str {
+    x
+}
+```
+
+### Destructuring a borrowed tuple or tuple element/s:
+
+* Implicit borrowing (Match ergonomics):
+
+```rust
+fn main() {
+    let data = ("foo".to_string(), "bar".to_string());
+    let borrowed_data = &data;
+
+    // The variables 'x' and 'y' are implicitly of type &String
+    let (x, y) = borrowed_data; 
+
+    println!("x: {}, y: {}", x, y); 
+    // The original 'data' can still be used later
+}
+```
+
+* Explicit Reference Patterns
+
+```rust
+fn main() {
+    let data = (1, 2);
+    let borrowed_data = &data;
+
+    // The '&' in the pattern matches the reference from the right-hand side
+    let (&x, &y) = borrowed_data; 
+
+    // 'x' and 'y' are of type i32 (a copy, since i32 is Copy)
+    println!("x: {}, y: {}", x, y);
+}
+```
+
+* Using ref and ref mut
+
+```rust
+fn main() {
+    let mut data = (1, 2);
+    let borrowed_mut_data = &mut data;
+
+    // Use 'ref mut' to get mutable references to the elements
+    let (ref mut x, ref mut y) = *borrowed_mut_data;
+
+    *x = 10;
+    *y = 20;
+
+    println!("data: {:?}", data); // Output: data: (10, 20)
+}
+```

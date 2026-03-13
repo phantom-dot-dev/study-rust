@@ -1,10 +1,10 @@
 ### Importing (`using`) standered and external lilbrary:
 Libraries are called `crates` in rust. `https://crates.io/` is the official place for external libraries.
 
-* externel libaries/crates needs to be included inside of the `Cargo.toml` file under `[Dependencies]` section, to be used/imported
+* external libraries/crates needs to be included inside of the `Cargo.toml` file under `[Dependencies]` section, to be used/imported
 
 ```rust
-#![allow(unused)] // to get rid of Unsed warning
+#![allow(unused)] // to get rid of Unused warning
 
 use std::io; // std::io:* to bring all packages
 use rand::Rng; // packages/libraries are called crates in rust, search rust libraries and version in crates.io
@@ -16,6 +16,7 @@ fn main() {
     println!("");
 }
 ```
+
 
 ### `::` vs `.`:
 Or: . is for value member access, :: is for namespace member access

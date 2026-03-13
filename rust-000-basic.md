@@ -61,8 +61,30 @@ rand = "0.8.5"
 The compiler will throw error and error number as `error[<error_number>]`
 - `rustc --explain <error_number>` command will show some more description about the error
 
+### Multi-file project:
+Entry point of a rust application is the `main.rs` file. Other source file can be added as module/s and imported by `use` keyword.
+
+* file naming should be snake_case (not kebab-case)
+* function name should also be the same (snake_case)
+* importable function should be `pub` as public
+
+```rust
+// file: another_file.rs --------------------------------
+pub fn another_function() {
+    println!("Hello from another_function of another_file.rs");
+}
+
+// file: main.rs -----------------------------------------
+mod another_file.rs;
+use another_file::another_function;
+
+fn main() {
+    another_function();
+}
+```
+
 ### Guessing Game:
-A simple terminal game, the program will generate a random number between 1 & 100, and will ask the user to guess the exact number until it's correct.
+A simple terminal game, the program will generate a random number between 1 & 100, and will ask the user to guess the exact number until it's correct
 
 ```rust
 // use std::cmp::Ordering;
@@ -568,6 +590,7 @@ fn main() {
     }
 }
 ```
+
 
 
 ### Temp code:
