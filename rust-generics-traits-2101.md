@@ -39,7 +39,7 @@ fn main() {
 * We can also specify constraints on generic types when defining methods on the type
 
 ```rust
-// defining constraints for implementation
+// defining constraints for implementation, the f32 will be the concrete type implementation 
 impl Point<f32> {
     fn distance_form_origin(&self) -> f32 {
         (self.x.powi(2) + self.y.powi(2)).sqrt()
@@ -47,3 +47,5 @@ impl Point<f32> {
 }
 
 ```
+
+### Traits:
