@@ -1,4 +1,4 @@
-pub fn init_lifetime_for_ref_validaiton() {
+pub fn init_lifetime_for_ref_validation() {
     println!("\n\n-------------Use of lifetime for reference validation---------------------\n\n");
     let s = sample_string_return("Hello");
     println!("{s}");
@@ -8,6 +8,19 @@ pub fn init_lifetime_for_ref_validaiton() {
         let b = 7;
         a = b;
     }
+
+    println!("Hello form {a}");
+
+    let string1 = String::from("long string is long");
+    let result;
+    {
+        let string2 = String::from("xyz");
+        // result = longest(string1.as_str(), string2.as_str()); // fails
+        // it fails because, the string2 will be removed as the scope ends, memory will be cleaned hence reference pointing to that memory will be obsolete, creating no chance for dangling pointer
+        // to make it work, we have to convert the borrowed reference type into a owned type. Then the `result` is no longer holding just a reference, rather actual data
+        result = longest(string1.as_str(), string2.as_str()).to_string(); 
+    }
+    println!("The longest string is {result}");
 }
 
 // the function below will not compile, as rust compiler need to know which borrowed parameter it need to retain for longer time, as 
@@ -33,3 +46,10 @@ fn sample_string_return(s1: &str) -> &str {
 //     let x = format!("{} {}", "abc", s1); // it will be deleted, as it's not a string literal with static lifetime
 //     &x // so when the function ends, the value of x will be deleted, and &x becomes a dangling pointer, which rust compiler will not allow
 // }
+
+
+
+// writing a function with lifetime annotations
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() > y.len() {x} else {y}
+}

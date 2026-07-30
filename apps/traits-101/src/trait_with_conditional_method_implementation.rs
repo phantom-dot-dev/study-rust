@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
 pub fn trait_with_conditional_method_impl() {
-    println!("\n\n------------Trait with conditional method implementation----------------\n\n");
+    println!("\n\n------------Trait with conditional method implementations----------------\n\n");
 
     let pair_same = Pair::new(12, 12);
     pair_same.compare();
