@@ -347,3 +347,50 @@ The elision rules don’t provide full inference. If there is still ambiguity ab
 3rd - The third rule is that, if there are multiple input lifetime parameters, but one of them is &self or &mut self because this is a method, the lifetime of self is assigned to all output lifetime parameters.
 
 When a function definition doesn't fall into this rules, we have to manually assign the lifetimes to make it clear for the rust compiler to resolve disambiguate so that no dangling pointer can be exists.
+
+
+### Lifetime annotation with Method Definitions:
+Lifetime names for struct fields always need to be declared after the impl keyword and then used after the struct’s name because those lifetimes are part of the struct’s type.
+
+```rust
+impl<'a> ImportantExcerpt<'a> {
+    fn level(&self) -> i32 {
+        7
+    }
+
+    fn announce_and_return_part(&self, announcement: &str) -> &str {
+        println!("Attention please: {announcement}");
+        self.part
+    }
+}
+```
+
+
+### Static Lifetime:
+All string literal have the 'static' lifetime, which live for the entire duration of the program.
+
+```rust
+let s: &'static str = "I have a static lifetime.";
+// The text of this string is stored directly in the program’s binary, which is always available. Therefore, the lifetime of all string literals is 'static.
+```
+
+* when an error message suggesting the 'static lifetime results from attempting to create a dangling reference or a mismatch of the available lifetimes. Sometime the solution is to fix those problems, not to specify the 'static lifetime.
+
+### Generic Type Parameters, Trait Bounds & Lifetimes:
+Lifetimes are a type of generic, the declarations of the lifetime parameter 'a and the generic type parameter T go in the same list inside the angle brackets after the function name.
+
+```rust
+use std::fmt::Display;
+
+fn longest_with_an_announcement<'a, T> (
+    x: &'a str,
+    y: &'a str,
+    ann: T
+) -> &'a str
+where 
+    T: Display,
+{
+    println!("Announcement! {ann}");
+    if x.len() > y.len() { x } else { y }
+}
+```
