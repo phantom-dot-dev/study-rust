@@ -8,6 +8,10 @@ pub fn add_two(a: u64) -> u64 {
     a + 2
 }
 
+pub fn greeting(s: &str) -> String {
+    format!("Hello {s}")
+} 
+
 #[derive(Debug)]
 struct Rectangle {
     width: u32,
@@ -22,6 +26,7 @@ impl Rectangle {
 
 #[cfg(test)]
 mod tests {
+    include!("another_test_file.rs");
     use super::*;
 
     use crate::Rectangle;
@@ -63,5 +68,19 @@ mod tests {
         let smaller_rec = Rectangle { width: 4, height: 3 };
 
         assert!(!smaller_rec.can_hold(&larger_rec)); // we're negating the output of can_hold function before injecting in assert! macro
+    }
+
+    // --------------- Custom error message when test fails
+    #[test]
+    fn greeting_success() {
+        let result = greeting("Dickinson");
+        assert!(result.contains("Dickinson"));
+    }
+
+     #[test]
+    fn greeting_fail() {
+        let name = "Dickinson";
+        let result = greeting(name);
+        assert!(result.contains("Eddie"), "Greeting doesn't contain the word {name}, and the full sentence is \n\"{result}\"");
     }
 }

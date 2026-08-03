@@ -424,7 +424,7 @@ fn main() {
 }
 ```
 
-* Explicit Reference Patterns
+* Explicit Reference Pattern
 
 ```rust
 fn main() {
