@@ -455,3 +455,186 @@ fn main() {
     println!("data: {:?}", data); // Output: data: (10, 20)
 }
 ```
+
+
+
+### Controlling how test are run (with `cargo test` flags):
+`cargo test --help` show all available help docs
+`cargo test -- --help` show all options after the separators
+
+
+`cargo test -- --test-threads=1` to run test code using single thread (instead of all available cpu threads). The testing will be slower, but if any test function relies on for another function, this is the way to go
+
+
+`cargo test -- --show-output` will show any print/std-out called inside of a test function even on pass/ok cases. Without this, by default, function will only show std-out when they fails.  
+
+`cargo test a_test_function` will only run the specified function or functions containing `a_test_function` in their specified name, by this we can specify part of a test name, and any test whose name matches that value will be run. 
+
+`cargo test -- --ignored` to run ignored tests. When a test function has `#[ignore]` attribute, it won't run unless this is specified (As it may take too long to complete)
+
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        let result = add(2, 2);
+        assert_eq!(result, 4);
+    }
+
+    #[test]
+    #[ignore]
+    fn expensive_test() {
+        // code that takes an hour to run
+    }
+}
+```
+
+### Unit testing:
+Unit test codes are put in src directory (for both binary and library crate). The convention is to create a module name `tests` in each file to contain the test function  annotated with `#(cfg(test))` attribute.
+
+* private functions can also be tested the same way as for public in unit test.
+
+```rust
+pub fn add_two(a: u64) -> u64 {
+    internal_adder(a, 2)
+}
+
+fn internal_adder(left: u64, right: u64) -> u64 {
+    left + right
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn internal() {
+        let result = internal_adder(2, 2);
+        assert_eq!(result, 4);
+    }
+}
+```
+
+### Integration test: 
+integration tests are entirely external to your library. They use your library in the same way any other code would, which means they can only call functions that are part of your library’s public API.
+
+a `./test/` directory is must for integration test. All files inside that directory will be considered as test file. We don't need the `#[cfg(test)]` annotation. 
+
+```rust
+// Each file in the tests directory is a separate crate, so we need to bring our library into each test crate’s scope. Hence we're doing `use adder::add_two` from our library crate (which names adder)
+use adder::add_two;
+
+#[test]
+fn it_adds_two() {
+    let result = add_two(2);
+    assert_eq!(result, 4);
+}
+```
+
+`cargo test --test integration_test_file_name_thats_inside_test_directory` to run a specific integration test
+
+
+* Helper/Common functions for integration test: these need to be placed in a sub-directory inside of the test directory with `mod.rs` as file name.
+
+```text
+# directory structure for hosting submodule for common helper code for integration test
+├── Cargo.lock
+├── Cargo.toml
+├── src
+│   └── lib.rs
+└── tests
+    ├── common
+    │   └── mod.rs
+    └── integration_test.rs
+
+```
+
+* integration test example
+
+```rust
+// assuming this in ./test/common/mod.rs file
+pub fn setup() {
+    // setup code specific to your library's tests would go here
+}
+
+// assuming this in ./test/integration_test.rs file
+use adder::add_two;
+
+mod common;
+
+#[test]
+fn it_adds_two() {
+    common::setup();
+
+    let result = add_two(2);
+    assert_eq!(result, 4);
+}
+```
+
+### Unit testing with binary crate:
+To run unit tests specifically for a binary crate, place your tests module (containing all test function) directly inside src/main.rs file (or files inside src/bin/).
+
+Because code inside a binary crate cannot be imported by external test files, unit tests must live side-by-side with your application logic.
+
+```rust
+// src/main.rs
+
+fn process_input(input: &str) -> String {
+    format!("Processed: {}", input)
+}
+
+fn main() {
+    let result = process_input("hello");
+    println!("{}", result);
+}
+
+// Unit tests live directly inside the file
+#[cfg(test)]
+mod tests {
+    use super::*; // Brings process_input and other main.rs items into scope
+
+    #[test]
+    fn test_process_input() {
+        let output = process_input("rust");
+        assert_eq!(output, "Processed: rust");
+    }
+}
+```
+
+`cargo test --bin <your-project-name>` to only run unit test, ignoring library and integration test.
+
+`cargo test --bin <your-project-name> test_process_input` run only specified unit test of the specified function written inside the binary crate as test function.
+
+### Integration test for binary:
+If our project is a binary crate that only contains a src/main.rs file and doesn’t have a src/lib.rs file, we can’t create integration tests in the tests directory and bring functions defined in the src/main.rs file into scope with a use statement. 
+
+Only library crates expose functions that other crates can use; binary crates are meant to be run on their own.
+
+We have to run the binary app/artifact and run integration test against the full app
+
+* Assuming our test directory contains this code residing in ./test/test_cli.rs file and our binary crate project name is my_project
+
+```rust
+use std::process::Command;
+
+#[test]
+fn test_binary_version_flag() {
+    // 1. Get the path to the compiled binary
+    let bin_path = env!("CARGO_BIN_EXE_my_project");
+
+    // 2. Run the binary as a subprocess
+    let output = Command::new(bin_path)
+        .arg("--version")
+        .output()
+        .expect("Failed to execute binary");
+
+    // 3. Assert on exit status and output
+    assert!(output.status.success());
+    
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("my_project 0.1.0"));
+}
+
+```

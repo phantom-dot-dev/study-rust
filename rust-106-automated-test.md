@@ -11,7 +11,7 @@ Test bodies usually performs these 3 actions
 A test in rust is a function annotated with text attribute `#[text]` placed before the function definition line. When `cargo test` is run, rust build the test binary that runs the annotated functions & report about each function's success or failure.
 
 
-Test module can be functions without the `#[test]` attribute, to help set up common scenarios or perform common operations for all test functions
+Test module can be functions without the `#[test]` attribute, to help set up common scenarios or perform common operations for all test functions.......
 
 ```rust
 // commands
