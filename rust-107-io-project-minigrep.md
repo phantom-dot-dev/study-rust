@@ -526,6 +526,122 @@ fn main() {
 }
 ```
 
+### Iterators:
+Iterators are used to perform some task on a sequence of items (collection to be precise, ie, vector, list, etc) in turn. Because they are `lazy` initialized, unless methods that consume that, there is no effect, so method like `next`, `collect` or manual loop needs to be called.
+
+```rust
+let v1 = vec![1, 2, 3];
+
+let v1_iter = v1.iter(); // converting vector v1 into Iterator
+
+// looping over the iterator v1_iter, 
+// though, for-in loop convert the collection into an Iterator if not converted already
+for val in v1_iter {
+    println!("Got: {val}");
+}
+```
+
+Iterators are consumed, and it keeps track of all the consumed item/s from a collection.
+
+```rust
+#[test]
+fn iterator_demonstration() {
+    let v1 = vec![1, 2, 3];
+
+    let mut v1_iter = v1.iter(); // converting a vector into an Iterator, which make `next()` method available 
+
+    assert_eq!(v1_iter.next(), Some(&1));
+    assert_eq!(v1_iter.next(), Some(&2));
+    assert_eq!(v1_iter.next(), Some(&3));
+    assert_eq!(v1_iter.next(), None);
+}
+```
+
+### Iterator trait & the `next` method:
+All iterators implement a trait named Iterator that is defined in the standard library. 
+
+```rust
+pub trait Iterator {
+    type Item; // associated type
+
+    fn next(&mut self) -> Option<Self::Item>;
+
+    // methods with default implementations elided
+}
+```
+
+* When we loop over some collection using `for in`, behind the scene the collection is converted into an iterator using the `IntoIterator` trait, and use `next()` while looping.
+
+* Looping tips using `for in` to be more precise with ownership
+    - `for item in collection` — Loops by consuming the collection (takes ownership, so you cannot use the collection afterward).
+    - `for item in &collection` — Loops by borrowing the items (leaves the original collection untouched).
+    - `for item in &mut collection` — Loops by mutably borrowing the items (allows you to modify the data in place).
+
+
+### Frequently used Iterator Methods:
+Rust has dozens of methods in the standard library's Iterator trait. They split into core required methods, adapters that change or filter data, and consumers that finish the loop and return a result.
+
+---------------------------------------------------
+* Converting Collection to Iterator:
+- `iter(&self)`: Creates iterator by borrowing item, short-hand `(&collection).into_iter()`
+- `iter_mut(&mut self)` : creates by borrowing mutably, short-hand `(&mut collection).into_iter()`
+- `into_iter(self)` : Consumes the collection and takes full ownership
+
+
+--------------------------------------------------
+* Splitting Collection to Iterator:
+- chunks(size) / chunks_mut(size) — Splits a slice or Vec into an iterator of non-overlapping chunks of a given size.
+- windows(size) — Returns an iterator over all contiguous windows of a given size (overlapping sub-slices).
+- split(pred) / split_mut(pred) — Returns an iterator over elements separated by a matching condition.
+- drain(range) — Removes a specified range of elements from a vector or map and returns them as an owning iterator, keeping the rest of the collection intact.
+
+----------------------------------------------------
+* Core Method
+- next - Returns the next Item
+
+------------------------------------------------------------------
+* Iterator Adapters (Produce a new Iterator)
+
+- map — Changes each item.
+- filter — Keeps items matching a test.
+- filter_map — Filters and maps at the same time.
+- flat_map — Maps and flattens nested lists.
+- flatten — Flattens nested iterators.
+- enumerate — Adds an index counter.
+- zip — Pairs items with another iterator.
+- chain — Joins two iterators end-to-end.
+- take — Keeps only the first n items.
+- take_while — Keeps items while a test is true.
+- skip — Skips the first n items.
+- skip_while — Skips items while a test is true.
+- step_by — Yields every nth item.
+- inspect — Lets you look at an item without changing it.
+- peekable — Allows looking at the next item early.
+- fuse — Keeps returning none after ending.
+- rev — Reverses the iterator.
+- cycle — Repeats the iterator forever.
+
+
+---------------------------------------------------------------
+* Consumers (Run the Iterator and return a value)
+
+- collect : Turns items into a collection like a vector.
+- count : Counts how many items are left.last — Gets the final item.
+- fold — Accumulates a single value from left to right.
+- reduce — Accumulates items using a function.
+- for_each — Runs code on every item.
+- all — Checks if all items pass a test.
+- any — Checks if any item passes a test.
+- find — Locates the first item matching a test.
+- find_map — Locates and maps the first match.
+- position — Finds the index of a matching item.
+- nth — Gets the nth item.
+- sum — Adds all numbers up.
+- product — Multiplies all numbers up.
+- max — Finds the largest item.
+- min — Finds the smallest item.
+- cmp / partial_cmp — Compares iterators.
+
 ### ABI and Interaction with the OS:
 Rust supports a wide variety of calling conventions (ABIs) to interact with the underlying operating system, compile assembly, and link with foreign programming languages like C, C++, and WebAssembly.
 
