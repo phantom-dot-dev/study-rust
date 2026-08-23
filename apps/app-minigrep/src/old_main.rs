@@ -7,9 +7,8 @@ use minigrep::search;
 use minigrep::search_case_insensitive;
 
 fn main() {
-    // before iterator/closure implementation
-    // let args: Vec<String> = env::args().collect();
-    //dbg!(&args); // need to add `&` here, to prevent move, as injected owned parameter will be moved, hence the borrowed version
+    let args: Vec<String> = env::args().collect();
+    dbg!(&args); // need to add `&` here, to prevent move, as injected owned parameter will be moved, hence the borrowed version
 
 
     // let default_value = String::from("No option given");
@@ -17,7 +16,7 @@ fn main() {
     // let file_name = args.get(2).unwrap_or(&default_value);
 
     // let config = Config::new(&args);
-    let config = Config::build(env::args()).unwrap_or_else(|err| {
+    let config = Config::build(&args).unwrap_or_else(|err| {
         println!("Problem parsing arguments: {err}");
         process::exit(1);
     });
@@ -42,20 +41,13 @@ struct Config {
 
 impl Config {
 
-    fn build(
-        mut args: impl Iterator<Item = String>,
-    ) -> Result<Self, &'static str> {
-        args.next();
+    fn build(args: &[String]) -> Result<Self, &'static str> {
+        if args.len() < 3 {
+            return Err("Not enough arguments")
+        }
 
-        let query = match args.next() {
-            Some(val) => val,
-            None => return Err("Didn't get a query string"),
-        };
-
-        let file_name = match args.next() {
-            Some(val) => val,
-            None => return Err("Didn't get a file path"),
-        };
+        let query = args[1].clone();
+        let file_name = args[2].clone();
 
         //capture environment variable
         let ignore_case = env::var("IGNORE_CASE").is_ok();
@@ -86,9 +78,9 @@ fn run(config: &Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(&config.file_name)?;
     
     let result = if config.ignore_case {
-        search_case_insensitive(&config.query, &contents)
-    } else {
         search(&config.query, &contents)
+    } else {
+        search_case_insensitive(&config.query, &contents)
     };
 
     for line in result {

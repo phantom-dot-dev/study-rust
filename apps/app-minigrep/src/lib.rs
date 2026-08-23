@@ -1,4 +1,18 @@
+// cargo run bog poem.txt
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    contents.lines()
+    .filter(|line| line.contains(query))
+    .collect()
+}
+
+// IGNORE_CASE="" cargo run BOG poem.txt
+pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    contents.lines()
+    .filter(|line| line.contains(query))
+    .collect()
+}
+
+pub fn old_search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     // unimplemented!();
     // todo!();
     // let query = query.to_lowercase();
@@ -13,7 +27,7 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     results
 }
 
-pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+pub fn old_search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     // unimplemented!();
     // todo!();
     let query = query.to_lowercase();

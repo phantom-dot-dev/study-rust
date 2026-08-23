@@ -568,6 +568,9 @@ pub trait Iterator {
 
     // methods with default implementations elided
 }
+
+// note : type Item and Self::Item, which are defining an associated type with this trait.
+// this associated type says implementing the Iterator trait requires that Item type must be defined
 ```
 
 * When we loop over some collection using `for in`, behind the scene the collection is converted into an iterator using the `IntoIterator` trait, and use `next()` while looping.
@@ -578,7 +581,103 @@ pub trait Iterator {
     - `for item in &mut collection` — Loops by mutably borrowing the items (allows you to modify the data in place).
 
 
-### Frequently used Iterator Methods:
+### Methods consuming Iterators:
+Methods that call `next` are called consuming adapter, as calling them uses up the iterator. Like the `sum` method, which takes ownership of the iterator and iterates through the items by repeatedly calling next, thus consuming the iterator. As it iterates through, it adds each item to a running total and returns the total when iteration is complete.
+
+
+
+```rust
+#[test]
+fn iterator_sum() {
+    let v1 = vec![1, 2, 3];
+
+    let v1_iter = v1.iter();
+
+    let total: i32 = v1_iter.sum();
+
+    assert_eq!(total, 6);
+    // println!("{v1_iter}"); // compile error, v1_iter is no longer available as using sum had moved the ownership
+}
+```
+
+### Methods producing Iterator (aka, Iterator adapters):
+Iterator adapters are methods defined on the Iterator trait that don’t consume the iterator. Instead, they produce different iterators by changing some aspect of the original iterator.
+
+Like, the iterator adapter method `map`, which takes a closure to call on each item as the items are iterated through. The map method returns a new iterator that produces the modified items. The closure here creates a new iterator in which each item from the vector will be incremented by 1.
+
+
+* Note: Iterator adapters are chainable to do complex action. But, as iterators are lazy, consuming adapter methods are required to be called to get results.
+
+
+```rust
+let v1: Vec<i32> = vec![1, 2, 3];
+
+v1.iter().map(|x| x + 1); // this doesn't do anything, as we're not using/calling the lazy iterator adapter
+
+let v2: Vec<_> = v1.iter().map(|x| x + 1).collect();
+// the collect() method used here, will consumes the iterator and collects the resultant values into a collection data type `v2`
+
+ assert_eq!(v2, vec![2, 3, 4]);
+```
+
+### Usages of Iterator adapter `filter` method:
+the filter method that takes a closure. The closure gets an item from the iterator and returns a bool. If the closure returns true, the value will be included in the iteration produced by filter. If the closure returns false, the value won’t be included.
+
+```rust
+// the example below, we're using filter with a closure that captures the shoe_size variable from its environment to iterate over a collection of Shoe struct instances. It will return only shoes that are the specified size.
+
+#[derive(PartialEq, Debug)]
+struct Shoe {
+    size: u32,
+    style: String,
+}
+
+fn shoes_in_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
+    shoes.into_iter().filter(|s| s.size == shoe_size).collect()
+    // the filter method consuming variable from its environment (function's parameter) through its closure
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn filters_by_size() {
+        let shoes = vec![
+            Shoe {
+                size: 10,
+                style: String::from("sneaker"),
+            },
+            Shoe {
+                size: 13,
+                style: String::from("sandal"),
+            },
+            Shoe {
+                size: 10,
+                style: String::from("boot"),
+            },
+        ];
+
+        let in_my_size = shoes_in_size(shoes, 10);
+
+        assert_eq!(
+            in_my_size,
+            vec![
+                Shoe {
+                    size: 10,
+                    style: String::from("sneaker")
+                },
+                Shoe {
+                    size: 10,
+                    style: String::from("boot")
+                },
+            ]
+        );
+    }
+}
+```
+
+### Frequently used Iterator Methods (Both consuming and producing):
 Rust has dozens of methods in the standard library's Iterator trait. They split into core required methods, adapters that change or filter data, and consumers that finish the loop and return a result.
 
 ---------------------------------------------------
@@ -641,6 +740,68 @@ Rust has dozens of methods in the standard library's Iterator trait. They split 
 - max — Finds the largest item.
 - min — Finds the smallest item.
 - cmp / partial_cmp — Compares iterators.
+
+### Improving I/O minigrep with closures:
+Instead of sending a string slice, we can send the owned Iterator directly using `std::env::args()` and change the `Config::build` signature to accept that
+
+```rust
+fn main() {
+    let config = Config::build(env::args()).unwrap_or_else(|err| {
+        eprintln!("Problem parsing arguments: {err}");
+        process::exit(1);
+    });
+
+    // --snip--
+}
+
+impl Config {
+    fn build(
+        mut args: impl Iterator<Item = String>,
+    ) -> Result<Config, &'static str> {
+        args.next(); // first arg will be the program name, hence we're just consuming that by calling, so on next call, we'll get the actual argument
+
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a query string"),
+        };
+
+        let file_path = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a file path"),
+        };
+
+        // --snip--
+    }
+}
+```
+
+
+Changing the searching functionality using Iterator and Closure
+
+```rust
+// cargo run bog poem.txt
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    contents.lines()
+    .filter(|line| line.contains(query))
+    .collect()
+}
+
+// IGNORE_CASE="" cargo run BOG poem.txt
+pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    contents.lines()
+    .filter(|line| line.contains(query))
+    .collect()
+}
+```
+
+### Loop vs Iterator's Adapter methods and Readability:
+Iterator's adapter and manual loop are nearly same performance (loop has the edge)
+And Iterator's method chaining is more readable than looping
+
+```txt
+test bench_search_for  ... bench:  19,620,300 ns/iter (+/- 915,700)
+test bench_search_iter ... bench:  19,234,900 ns/iter (+/- 657,200)
+```
 
 ### ABI and Interaction with the OS:
 Rust supports a wide variety of calling conventions (ABIs) to interact with the underlying operating system, compile assembly, and link with foreign programming languages like C, C++, and WebAssembly.
