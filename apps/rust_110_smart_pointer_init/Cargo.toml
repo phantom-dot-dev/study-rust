@@ -1,0 +1,6 @@
+[package]
+name = "rust_110_smart_pointer_init"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]

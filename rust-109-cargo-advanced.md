@@ -232,3 +232,31 @@ mod tests {
     }
 }
 ```
+
+
+### Installing binary packages with `cargo install`:
+General purpose tools can be install directly using `cargo install <package_name>`
+
+Binary package that are hosted inside the `crates.io` are available for this.
+
+```sh
+# Installing `ripgrep` package from crates.io to use as command-line text searching tool (like grep)
+$ cargo install ripgrep
+    Updating crates.io index
+  Downloaded ripgrep v14.1.1
+  Downloaded 1 crate (213.6 KB) in 0.40s
+  Installing ripgrep v14.1.1
+--snip--
+   Compiling grep v0.3.2
+    Finished `release` profile [optimized + debuginfo] target(s) in 6.73s
+  Installing ~/.cargo/bin/rg
+   Installed package `ripgrep v14.1.1` (executable `rg`)
+```
+
+
+### Cargo and Custom sub-commands and listing available custom commands:
+Cargo is designed so that you can extend it with new subcommands without having to modify it. If a binary in your $PATH is named cargo-something, you can run it as if it were a Cargo subcommand by running cargo something. 
+
+
+Custom commands like this are also listed when you run cargo --list. Being able to use cargo install to install extensions and then run them just like the built-in Cargo tools is a super-convenient benefit of Cargo’s design!.
+
