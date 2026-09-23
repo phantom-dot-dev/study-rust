@@ -32,3 +32,51 @@ It's the most straightforward smart pointer. It allows to store data on the heap
 * Boxes provide only the indirection and heap allocation; they don’t have any other special capabilities. Using Box with recursive type provide rust compiler the exact required data size prediction, as with Box<T>, it's only the memory pointer storage (same for everything) and the actual data will be stored on the heap
 
 
+
+```rust
+// const list (recursive pattern), ie, (1, (2, (3, Nil)))
+enum List {
+    // Cons(i32, List) // because we included another List type inside of the List type, it's a recursive type, without know size, rust will flag this as an error
+    Cons(i32, Box<List>), // with the Box<T>, we've created a smart pointer, Now rust compiler knows, it only have to store the pointer address (fixed size for everything) to the stack memory and the actual data will be stored in the heap
+    Nil,
+}
+
+use crate::box_smart_pointer::List::{Cons, Nil}; // without this shortcut creation, we'll have to call each of the Cons and Nil by List::Cons and list::Nil
+
+// Calling the Cons list with different recursion levels
+fn call_cons_list() {
+    let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
+    let list3 = Cons(1, Box::new(Cons(2, Box::new(Nil))));
+    let list2 = Cons(1, Box::new(Nil));
+    let List4 = Nil;
+    let list5 = List::Nil; // without using the short-cut created by `use` statement
+}
+```
+
+* Dereference operator `*` (to convert pointer to actual value)
+
+```rust
+fn main() {
+    let x = 5;
+    let y = &x;
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+    // assert_eq(5, y); // will not work, as y is pointer here and `5` is a integer
+}
+
+
+// Same applies for Box<T>, after creating a Box type, it's a reference rather than an actual value
+fn main() {
+    let x = 5;
+    let y = Box::new(x);
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}
+```
+
+### `Deref` trait implementation with custom struct:
+Any custom struct will not function `*` prefixed deref operator without implementing the `Deref` trait.
+
+
